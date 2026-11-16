@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Copiloto CAD · Assistente de engenharia</title>
+  <meta name="description" content="Demonstração do Copiloto CAD: busca de projetos com ficha antes do arquivo, e construção guiada do sólido uma operação por vez. Empresa genérica." />
+  <meta name="theme-color" content="#0B1221" />
+  <link rel="stylesheet" href="fonts/inter.css" />
+  <link rel="stylesheet" href="copiloto-cad.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three/three.module.js"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <nav class="demo-nav">
+    <span class="nav-spacer" aria-hidden="true"></span>
+    <div class="demo-nav-center">
+      Engenharia <span>|</span> ambiente interno demonstrativo
+    </div>
+    <div class="nav-tools">
+      <a class="demo-link" href="https://edumesqg.github.io/Agente_CAD/" target="_blank" rel="noopener noreferrer">Ver a demo online</a>
+      <a class="demo-link" href="https://github.com/Edumesqg/Agente_CAD" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <span class="demo-badge">Copiloto CAD · demo</span>
+      <button class="mob-toggle" id="mob-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">☰</button>
+    </div>
+  </nav>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Agentes e conversas">
+      <div class="sidebar-head">
+        <div class="brand-row">
+          <div class="brand-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+          </div>
+          <div>
+            <div class="brand-name">Copiloto CAD</div>
+            <div class="brand-sub">Assistente de engenharia</div>
+          </div>
+        </div>
+        <button class="new-btn" id="btn-new" type="button">Nova conversa</button>
+      </div>
+
+      <div class="sb-sect">
+        <span class="sb-label" id="agentes-label">Agentes</span>
+        <div class="ag-list" role="group" aria-labelledby="agentes-label">
+          <button class="ag-btn active" data-agent="reuso" id="ag-reuso" type="button" aria-current="true">
+            <div class="ag-ico" aria-hidden="true">📁</div>
+            <div class="ag-copy">
+              <div class="ag-name">Busca Inteligente de Projetos</div>
+              <div class="ag-sub">Biblioteca CAD + PLM</div>
+            </div>
+            <div class="ag-dot" aria-hidden="true"></div>
+          </button>
+          <button class="ag-btn" data-agent="cad" id="ag-cad" type="button">
+            <div class="ag-ico" aria-hidden="true">🧱</div>
+            <div class="ag-copy">
+              <div class="ag-name">Project Start</div>
+              <div class="ag-sub">Padrões, documentos e referências</div>
+            </div>
+            <div class="ag-dot" aria-hidden="true"></div>
+          </button>
+        </div>
+      </div>
+
+      <div class="sb-sect"><span class="sb-label">Recentes</span></div>
+      <div class="sb-recents">
+        <div class="recent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>SC8UU · kickoff eixo Ø8</div>
+        <div class="recent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>SHF08 · flange de eixo</div>
+      </div>
+
+      <div class="sb-foot">
+        <div class="user-av" aria-hidden="true">EM</div>
+        <div>
+          <div class="user-nm">Eduardo Mesquita</div>
+          <div class="user-role">Projetista de Chassis</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="scrim" id="scrim" hidden></div>
+
+    <main class="main">
+      <header class="chat-hdr">
+        <div class="chat-hdr-l">
+          <div class="hdr-badge" id="hdr-badge" aria-hidden="true">📁</div>
+          <div class="hdr-copy">
+            <div class="hdr-name" id="hdr-name">Busca Inteligente de Projetos</div>
+            <div class="hdr-status" id="hdr-status">Disponível · Biblioteca CAD + PLM</div>
+            <div class="hdr-desc" id="hdr-desc">Consulte projetos existentes e encontre referências para novos desenvolvimentos.</div>
+          </div>
+        </div>
+        <div class="src-pills" id="src-pills"></div>
+        <div class="who-live" id="who-live"><span class="wdot" aria-hidden="true"></span><span id="who-text">Aguardando</span></div>
+      </header>
+
+      <div class="chat-stream" id="chat-stream">
+        <div class="stream-inner" id="stream-inner"></div>
+      </div>
+
+      <div class="chat-composer">
+        <div class="comp-inner">
+          <div class="chips" id="chips"></div>
+          <form class="comp-row" id="form-comp">
+            <label class="sr-only" for="chat-input">Mensagem</label>
+            <input type="text" id="chat-input" autocomplete="off" enterkeyhint="send" />
+            <button type="submit" class="send-btn" id="btn-send" disabled aria-label="Enviar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+          </form>
+          <p class="comp-hint" id="comp-hint">A próxima fala já está no campo. Clique em Enviar.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">Esta demonstração precisa de JavaScript e de um servidor estático para o viewer 3D.</p></noscript>
+
+  <script type="module" src="./copiloto-cad.js"></script>
+</body>
+</html>
